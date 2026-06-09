@@ -1,4 +1,4 @@
-export function checkAvailability(bookings, date) {
+export function checkAvailability(bookings: any[], date: string) {
   const match = bookings.find(b => b.date === date);
 
   if (!match) return "AVAILABLE";

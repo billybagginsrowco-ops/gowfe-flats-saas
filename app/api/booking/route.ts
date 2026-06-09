@@ -14,10 +14,12 @@ export async function POST(req: Request) {
   const booking = await prisma.booking.create({
     data: {
       userId: body.userId,
+      propertyId: body.propertyId,
       date: new Date(body.date),
       golfers: body.golfers,
       status: "HOLD",
-      price: body.price
+      totalPrice: body.price,
+      upsells: {}
     }
   });
 
