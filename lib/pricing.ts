@@ -1,4 +1,4 @@
-export function calculatePrice(date, golfers) {
+export function calculatePrice(date: string, golfers: number) {
   let base = 599;
 
   const month = new Date(date).getMonth();

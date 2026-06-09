@@ -18,16 +18,19 @@ model Property {
   id        String @id @default(cuid())
   name      String
   units     Int
+  bookings  Booking[]
 }
 
 model Booking {
-  id        String @id @default(cuid())
-  userId    String
+  id         String @id @default(cuid())
+  userId     String
+  user       User @relation(fields: [userId], references: [id])
   propertyId String
-  date      DateTime
-  golfers   Int
-  status    String
+  property   Property @relation(fields: [propertyId], references: [id])
+  date       DateTime
+  golfers    Int
+  status     String
   totalPrice Float
-  upsells   Json
-  createdAt DateTime @default(now())
+  upsells    Json
+  createdAt  DateTime @default(now())
 }
