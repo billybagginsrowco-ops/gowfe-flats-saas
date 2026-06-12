@@ -1,9 +1,11 @@
 import NextAuth, { type NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { PrismaClient } from '@prisma/client';
 import bcryptjs from 'bcryptjs';
+import prisma from '@/lib/prisma';
 
-const prisma = new PrismaClient();
+if (!process.env.NEXTAUTH_SECRET) {
+  throw new Error('Missing NEXTAUTH_SECRET environment variable');
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
