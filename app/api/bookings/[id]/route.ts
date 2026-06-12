@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '@/lib/prisma';
 
 export async function PUT(
   request: NextRequest,
@@ -47,8 +45,6 @@ export async function PUT(
       { error: 'Failed to update booking' },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -84,7 +80,5 @@ export async function DELETE(
       { error: 'Failed to delete booking' },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }
