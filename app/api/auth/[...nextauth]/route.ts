@@ -20,33 +20,39 @@ export const authOptions: NextAuthOptions = {
           throw new Error('Invalid credentials');
         }
 
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
-        });
+        try {
+          const user = await prisma.user.findUnique({
+            where: { email: credentials.email },
+          });
 
-        if (!user) {
-          throw new Error('No user found with this email');
+          if (!user) {
+            return null; // Don't expose whether email exists
+          }
+
+          const passwordMatch = await bcryptjs.compare(
+            credentials.password,
+            user.password || ''
+          );
+
+          if (!passwordMatch) {
+            return null; // Don't expose whether password is wrong
+          }
+
+          return {
+            id: user.id,
+            email: user.email,
+            role: user.role,
+          };
+        } catch (error) {
+          console.error('Auth error:', error);
+          return null;
         }
-
-        const passwordMatch = await bcryptjs.compare(
-          credentials.password,
-          user.password || ''
-        );
-
-        if (!passwordMatch) {
-          throw new Error('Invalid password');
-        }
-
-        return {
-          id: user.id,
-          email: user.email,
-          role: user.role,
-        };
       },
     }),
   ],
   pages: {
     signIn: '/login',
+    error: '/login', // Add error page for failed attempts
   },
   callbacks: {
     async jwt({ token, user }) {
@@ -63,6 +69,10 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     },
+  },
+  session: {
+    strategy: 'jwt',
+    maxAge: 24 * 60 * 60, // 24 hours
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
